@@ -103,19 +103,28 @@ pub fn main() !void {
     }
     const elliplen = ellipsis.len;
 
-    // if the input text is shorter than the ledting and trailing character
+    // if the input text is shorter than the leading and trailing character
     // count plus the ellipsis length, leave it intact
-    const heap = std.heap;
-    var allocator = heap.ArenaAllocator.init(heap.page_allocator);
-    defer allocator.deinit();
-    if (txtlen > lead + trail + elliplen) {
+    const cutlen = lead + trail + elliplen;
+    if (txtlen > cutlen) {
+        var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+        defer arena.deinit();
+        const allocator = arena.allocator();
+        var buffer = std.ArrayList(u8).init(allocator);
+        try buffer.ensureTotalCapacityPrecise(cutlen);
+        defer buffer.deinit();
         if (lead == 0) {
-            try stdout.print("{s}{s}", .{ ellipsis, txt[txtlen - trail .. txtlen] });
+            try buffer.appendSlice(ellipsis);
+            try buffer.appendSlice(txt[txtlen - trail .. txtlen]);
         } else if (trail == 0) {
-            try stdout.print("{s}{s}", .{ txt[0..lead], ellipsis });
+            try buffer.appendSlice(txt[0..lead]);
+            try buffer.appendSlice(ellipsis);
         } else {
-            try stdout.print("{s}{s}{s}", .{ txt[0..lead], ellipsis, txt[txtlen - trail .. txtlen] });
+            try buffer.appendSlice(txt[0..lead]);
+            try buffer.appendSlice(ellipsis);
+            try buffer.appendSlice(txt[txtlen - trail .. txtlen]);
         }
+        _ = try stdout.write(buffer.items);
     } else {
         _ = try stdout.write(txt);
     }

@@ -2,7 +2,7 @@
 
 An experiment to rewrite [cutmidel] from C to Zig.
 
-The code is only a little shorter and simpler to write, but the size grew substantially.
+The code is practically the same, simpler to write, but the size grew substantially.
 
 | Language |  Size [B] |  Speed [ms] |
 |----------|----------:|------------:|
@@ -10,7 +10,7 @@ The code is only a little shorter and simpler to write, but the size grew substa
 | C++      |    53,104 |      0.0055 |
 | Rust     |   300,368 |      0.0060 |
 | V        |   490,832 |      0.0075 |
-| Zig      |   877,054 |      0.0060 |
+| Zig      |   876,084 |      0.0060 |
 | Go       | 1,983,776 |      0.0070 |
 
 See the others in [C++], [Rust], [V] and [Go].
